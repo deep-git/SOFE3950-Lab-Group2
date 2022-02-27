@@ -1,2 +1,13 @@
+CC = gcc
+CFLAGS = -Wall -Wextra -std=c99
+LFLAGS = 
+LIBS = 
+SOURCES = jeopardy.c questions.c players.c
+OBJECTS = $(subst .c,.o,$(SOURCES))
+EXE = 
+
 myshell: myshell.c utility.c myshell.h
-	gcc -Wall -Wextra -std=c99 myshell.c utility.c -o myshell
+	$(CC) $(CFLAGS) $^ $(LIBS) -o $@ 
+
+%.o : %.c
+	$(CC) $(CFLAGS) -c $< 
