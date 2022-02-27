@@ -1,0 +1,4 @@
+clr
+pwd
+help
+echo hello
