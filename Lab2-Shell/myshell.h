@@ -1,4 +1,5 @@
 #include <stddef.h>
+#include <unistd.h>
 
 // Declare global variables 
     //int system(const char *command);   
@@ -11,3 +12,6 @@ extern void initialize(void);
 
 // Prints "~/myShell$ " 
 extern void shellPrompt(void);
+
+// Print current working directory
+extern void printDir(void);
