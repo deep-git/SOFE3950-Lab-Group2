@@ -15,3 +15,24 @@ extern void shellPrompt(void);
 
 // Print current working directory
 extern void printDir(void);
+
+// Change working directory
+extern void changeDir(void);
+
+// List contents of directory
+extern void dir(void);
+
+// List all the environment strrings
+extern void environ(void);
+
+// Print given <comment> on display followed by a new line
+extern void echo(int argc, char **argv);
+
+// Display the user manual
+extern void help(void);
+
+// Pause operation of the shell until 'Enter' is pressed
+extern void pause(void);
+
+// Display the user manual
+extern void quit(void);
