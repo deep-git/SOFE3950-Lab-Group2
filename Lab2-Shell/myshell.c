@@ -28,7 +28,17 @@ void printDir(void){
     printf("\n %s \n", cwd);
 }
 
-void changeDir(void) {
+int changeDir(char* path[]) {
+    if (path[1] == NULL){
+        chdir(getenv("HOME"));
+        return 1;
+    }else{ 
+		if (chdir(path[1]) == -1) {
+			printf(" %s: Directory NOT FOUND!\n", path[1]);
+            return -1;
+		}
+	}
+	return 0;
 }
 
 void dir(void) {
@@ -73,7 +83,7 @@ int main (int argc, char *argv[]){
         printDir();
 
         getline(&input, &len, stdin); // Read the user input
-
+        
 
 
     }
