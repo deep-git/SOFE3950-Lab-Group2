@@ -85,6 +85,8 @@ void help(void) {
 }
 
 void pause(void) {
+    printf("Operation currrently PAUSED. Press ENTER key to Continue\n");  
+    getchar();  
 }
 
 int quit(char **argv) {
@@ -96,7 +98,7 @@ void clearScreen(void) {
 }
 
 int main (int argc, char *argv[]){
-    initialize();
+    initialize();   ///welcome screen
 
     while(1){
 
