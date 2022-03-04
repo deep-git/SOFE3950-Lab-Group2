@@ -77,12 +77,12 @@ void help(void) {
                           "pause            : pause operation of the shell",
                           "quit             : quit the shell"};
 
-  printf("||============ C SHELL HELP GUIDE ============||");
-  printf("The following are available in-built commands that can be utilized: ");
+  printf("||============ C SHELL HELP GUIDE ============|| \n\n");
+  printf("The following are available in-built commands that can be utilized: \n\n");
 
   for (int i = 0; i < STRING_NUM; i++) {
     //options[i] = malloc(TOTAL_STRING_SIZE * sizeof(char));
-    printf("%s \n", options[i]);
+    printf("%s \n\n", options[i]);
   }
 }
 
@@ -116,6 +116,11 @@ int main (int argc, char *argv[]){
 
         if (strcmp(user_command, "clr") == 0) {
           clearScreen();
+        } else if (strcmp(user_command, "help") == 0) {
+          help();
+        } else if (strcmp(user_command, "pauses") == 0) {
+          pauses();
+        } else if (strcmp(user_command, "quit") == 0) {
         }
 
 
