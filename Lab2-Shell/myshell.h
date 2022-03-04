@@ -35,4 +35,4 @@ extern void help(void);
 extern void pause(void);
 
 // Display the user manual
-extern void quit(void);
+extern int quit(char **argv);

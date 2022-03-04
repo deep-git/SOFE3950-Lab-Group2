@@ -57,7 +57,8 @@ void help(void) {
 void pause(void) {
 }
 
-void quit(void) {
+int quit(char **argv) {
+	return 0;
 }
 
 void clearScreen(void) {
