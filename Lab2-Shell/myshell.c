@@ -5,6 +5,9 @@
 #include <linux/limits.h>
 #include "myshell.h"
 
+#define STRING_NUM = 8
+#define TOTAL_STRING_SIZE = 500
+
 void initialize(void){
 
     system("clear");
@@ -18,7 +21,7 @@ void initialize(void){
 
 }
 
-void shellPrompt(void){ 
+void shellPrompt(void){
     printf("~/myShell$ ");
 }
 
@@ -62,6 +65,23 @@ void echo(int argc, char **argv) {
 }
 
 void help(void) {
+
+  char options[STRING_NUM][TOTAL_STRING_SIZE] = {"cd <directory>   : change directories",
+                          "clr              : clear the screen",
+                          "dir <directory>  : list the contents of the directory",
+                          "environ          : list all the environment strings",
+                          "echo <comment>   : display <comment>",
+                          "help             : display the user manual",
+                          "pause            : pause operation of the shell",
+                          "quit             : quit the shell"};
+
+  printf("||============ C SHELL HELP GUIDE ============||")
+  printf("The following are available in-built commands that can be utilized: ");
+
+  for (int i = 0; i < STRING_NUM; i++) {
+    options[i] = malloc(TOTAL_STRING_SIZE * sizeof(char));
+    printf("%s \n", options[i]);
+  }
 }
 
 void pause(void) {
@@ -75,9 +95,9 @@ void clearScreen(void) {
 	system("clear");
 }
 
-int main (int argc, char *argv[]){ 
-    initialize();   
-    
+int main (int argc, char *argv[]){
+    initialize();
+
     while(1){
 
         shellPrompt();
