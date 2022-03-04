@@ -7,6 +7,10 @@
 
 #define STRING_NUM 8
 #define TOTAL_STRING_SIZE 500
+#define LIGHTBLUE "\033[1m\033[34m"
+#define BLUE "\033[0;34m"
+#define YELLOW "\033[1m\033[33m"
+#define NORMALCOLOUR "\033[0m"
 
 void initialize(void){
 
@@ -22,13 +26,13 @@ void initialize(void){
 }
 
 void shellPrompt(void){
-    printf("~/myShell$ ");
+  printf(YELLOW "~/myShell$ " NORMALCOLOUR);
 }
 
 void printDir(void){
     char cwd[PATH_MAX];
     getcwd(cwd, sizeof(cwd));
-    printf("\n %s \n", cwd);
+    printf("%s ", cwd);
 }
 
 int changeDir(char* path[]) {
@@ -49,7 +53,7 @@ void dir(void) {
 
 void environ(void) {
   /*
-	char **environment;
+	char environment[STRING_NUM];
 	for (int i = 0; environment[i] != NULL; i++) {
 		printf("Environment: %s \n", environment[i]);
 	}
@@ -108,7 +112,7 @@ int main (int argc, char *argv[]){
     while(1){
 
         shellPrompt();
-        printDir();
+        //printDir();
 
         //getline(&input, &len, stdin); // Read the user input
         fgets(user_command, TOTAL_STRING_SIZE, stdin);
@@ -121,6 +125,12 @@ int main (int argc, char *argv[]){
         } else if (strcmp(user_command, "pauses") == 0) {
           pauses();
         } else if (strcmp(user_command, "quit") == 0) {
+          quit(argv);
+          break;
+        } else if (strcmp(user_command, "echo") == 0) {
+          echo(argc, argv);
+        } else if (strcmp(user_command, "cd") == 0) {
+          changeDir(argv);
         }
 
 
