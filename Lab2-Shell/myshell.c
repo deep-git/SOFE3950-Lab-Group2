@@ -5,8 +5,8 @@
 #include <linux/limits.h>
 #include "myshell.h"
 
-#define STRING_NUM = 8
-#define TOTAL_STRING_SIZE = 500
+#define STRING_NUM 8
+#define TOTAL_STRING_SIZE 500
 
 void initialize(void){
 
@@ -35,7 +35,7 @@ int changeDir(char* path[]) {
     if (path[1] == NULL){
         chdir(getenv("HOME"));
         return 1;
-    }else{ 
+    }else{
 		if (chdir(path[1]) == -1) {
 			printf(" %s: Directory NOT FOUND!\n", path[1]);
             return -1;
@@ -75,18 +75,18 @@ void help(void) {
                           "pause            : pause operation of the shell",
                           "quit             : quit the shell"};
 
-  printf("||============ C SHELL HELP GUIDE ============||")
+  printf("||============ C SHELL HELP GUIDE ============||");
   printf("The following are available in-built commands that can be utilized: ");
 
   for (int i = 0; i < STRING_NUM; i++) {
-    options[i] = malloc(TOTAL_STRING_SIZE * sizeof(char));
+    //options[i] = malloc(TOTAL_STRING_SIZE * sizeof(char));
     printf("%s \n", options[i]);
   }
 }
 
 void pause(void) {
-    printf("Operation currrently PAUSED. Press ENTER key to Continue\n");  
-    getchar();  
+    printf("Operation currrently PAUSED. Press ENTER key to Continue\n");
+    getchar();
 }
 
 int quit(char **argv) {
@@ -98,6 +98,9 @@ void clearScreen(void) {
 }
 
 int main (int argc, char *argv[]){
+
+  char user_command[TOTAL_STRING_SIZE];
+
     initialize();   ///welcome screen
 
     while(1){
@@ -105,8 +108,14 @@ int main (int argc, char *argv[]){
         shellPrompt();
         printDir();
 
-        getline(&input, &len, stdin); // Read the user input
-        
+        //getline(&input, &len, stdin); // Read the user input
+        fgets(user_command, TOTAL_STRING_SIZE, stdin);
+        user_command[strlen(user_command) - 1] = '\0';
+
+        if (strcmp(user_command, "clr") == 0) {
+          printf("Hello world");
+        }
+
 
 
     }
