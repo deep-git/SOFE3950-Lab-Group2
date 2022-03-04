@@ -28,8 +28,43 @@ void printDir(void){
     printf("\n %s \n", cwd);
 }
 
-int main (int argc, char *argv[]){
+void changeDir(void) {
+}
 
+void dir(void) {
+}
+
+void environ(void) {
+	char **environment;
+	for (int i = 0; environment[i] != NULL; i++) {
+		printf("Environment: %s \n", environment[i]);
+	}
+}
+
+void echo(int argc, char **argv) {
+	if (argv[1] != NULL) {
+		for (int i = 0; i < argc; i++) {
+			printf("%s \n", argv[i]);
+		}
+	} else {
+		printf("Invalid echo format \n");
+	}
+}
+
+void help(void) {
+}
+
+void pause(void) {
+}
+
+void quit(void) {
+}
+
+void clearScreen(void) {
+	system("clear");
+}
+
+int main (int argc, char *argv[]){ 
     initialize();   
     
     while(1){
@@ -38,10 +73,6 @@ int main (int argc, char *argv[]){
         printDir();
 
         getline(&input, &len, stdin); // Read the user input
-        
-        //printf(input);
-
-
 
 
 
