@@ -48,10 +48,12 @@ void dir(void) {
 }
 
 void environ(void) {
+  /*
 	char **environment;
 	for (int i = 0; environment[i] != NULL; i++) {
 		printf("Environment: %s \n", environment[i]);
 	}
+  */
 }
 
 void echo(int argc, char **argv) {
@@ -84,7 +86,7 @@ void help(void) {
   }
 }
 
-void pause(void) {
+void pauses(void) {
     printf("Operation currrently PAUSED. Press ENTER key to Continue\n");
     getchar();
 }
@@ -113,7 +115,7 @@ int main (int argc, char *argv[]){
         user_command[strlen(user_command) - 1] = '\0';
 
         if (strcmp(user_command, "clr") == 0) {
-          printf("Hello world");
+          clearScreen();
         }
 
 

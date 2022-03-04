@@ -1,8 +1,8 @@
 #include <stddef.h>
 #include <unistd.h>
 
-// Declare global variables 
-    //int system(const char *command);   
+// Declare global variables
+    //int system(const char *command);
 
 char *input = NULL;
 size_t len = 0;
@@ -10,7 +10,7 @@ size_t len = 0;
 // Initializes cmd line interpreter
 extern void initialize(void);
 
-// Prints "~/myShell$ " 
+// Prints "~/myShell$ "
 extern void shellPrompt(void);
 
 // Print current working directory
@@ -32,7 +32,7 @@ extern void echo(int argc, char **argv);
 extern void help(void);
 
 // Pause operation of the shell until 'Enter' is pressed
-extern void pause(void);
+extern void pauses(void);
 
 // Display the user manual
 extern int quit(char **argv);
