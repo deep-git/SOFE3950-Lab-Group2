@@ -144,6 +144,8 @@ void choices(int argc, char **argv) {
     exit(0);
   } else if (strcmp(argv[0], "echo") == 0) {
     echo(argc, argv);
+  } else if (strcmp(argv[0], "environ") == 0) {
+    environ();
   } else if (strcmp(argv[0], "cd") == 0) {
     // changeDir(argv);
     printDir();
