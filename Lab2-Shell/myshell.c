@@ -5,11 +5,12 @@
 #include <linux/limits.h>
 #include "myshell.h"
 
+// Define specifications
 #define STRING_NUM 8
 #define TOTAL_STRING_SIZE 500
 #define MAX_SIZE 1024
 
-#define LIGHTBLUE "\033[1m\033[34m"
+// Define colours
 #define BLUE "\033[0;34m"
 #define YELLOW "\033[1m\033[33m"
 #define NORMALCOLOUR "\033[0m"
@@ -26,7 +27,11 @@ void initialize(void){
     printf("\n****************************************************\n");
 }
 
+<<<<<<< Updated upstream
 
+=======
+// Prompts the user
+>>>>>>> Stashed changes
 void shellPrompt(void){
   char cwd[PATH_MAX];
   printf(YELLOW "%s$ " NORMALCOLOUR, getcwd(cwd, MAX_SIZE));
@@ -34,12 +39,14 @@ void shellPrompt(void){
 
 }
 
+// Prints the current directory
 void printDir(void){
     char cwd[PATH_MAX];
     getcwd(cwd, sizeof(cwd));
     printf("\n%s\n\n", cwd);
 }
 
+<<<<<<< Updated upstream
 void changeDir(char *dir) {
     char cwd[MAX_SIZE];
     
@@ -56,33 +63,55 @@ void changeDir(char *dir) {
       if (chdir(cwd) < 0)             //checks if no file/directory of that name is found 
         printf("ERROR: File / Directory could not be found (%s)\n", dir);
       return;
+=======
+// Function to change the directory
+void changeDir(char* dir) {
+
+    char path[125];
+
+    if (dir != NULL){
+      chdir(dir);
+      putenv(dir);
+      getcwd(path, sizeof(path));
+
+      // strncat(path, "/", 1);
+		strncat(path, dir, strlen(dir));
+		if (chdir(path) < 0)
+			printf("ERROR: File / Directory could not be found %s\n", dir);
+		return;
+>>>>>>> Stashed changes
     }
-    
+
 }
 
+// Function to print the contents of the current directory
 void dir(void) {
 }
 
+// Function to print the environment strings
 void environ(void) {
-  /*
-	char environment[STRING_NUM];
-	for (int i = 0; environment[i] != NULL; i++) {
-		printf("Environment: %s \n", environment[i]);
-	}
-  */
+
 }
 
+// Function to display echo message
 void echo(int argc, char **argv) {
+
+  // If the user entered a message after the word echo
 	if (argv[1] != NULL) {
+    // Loops through the amount of words to echo
 		for (int i = 1; i < argc; i++) {
+      // Prints the echoed word
 			printf("%s ", argv[i]);
 		}
     printf("\n");
+
+  // If the user did not enter anything to echo
 	} else {
-		printf("Invalid echo format \n");
+		printf("Invalid echo format: echo <comment>\n");
 	}
 }
 
+// Function to provide user with help manual
 void help(void) {
 
   char options[STRING_NUM][TOTAL_STRING_SIZE] = {"cd <directory>   : change directories",
@@ -97,21 +126,24 @@ void help(void) {
   printf("||============ C SHELL HELP GUIDE ============|| \n\n");
   printf("The following are available in-built commands that can be utilized: \n\n");
 
+  // Displays the help manual
   for (int i = 0; i < STRING_NUM; i++) {
-    //options[i] = malloc(TOTAL_STRING_SIZE * sizeof(char));
     printf("%s \n\n", options[i]);
   }
 }
 
+// Function to pause the command line
 void pauses(void) {
     printf("Operation currrently PAUSED. Press ENTER key to Continue\n");
     getchar();
 }
 
+// Exits the program
 int quit(char **argv) {
 	return 0;
 }
 
+// Function to clear the screen
 void clearScreen(void) {
 	system("clear");
 }
@@ -137,30 +169,48 @@ void fileIO(char *path){
   }
 }
 
+// Performs actions based on specific user input entered
 void choices(int argc, char **argv) {
+
+  // If the user entered clr
   if (strcmp(argv[0], "clr") == 0) {
     clearScreen();
+
+      // If the user entered help
   } else if (strcmp(argv[0], "help") == 0) {
     help();
+
+      // If the user entered pauses
   } else if (strcmp(argv[0], "pauses") == 0) {
     pauses();
+
+      // If the user entered quit
   } else if (strcmp(argv[0], "quit") == 0) {
     quit(argv);
     exit(0);
+
+      // If the user entered echo
   } else if (strcmp(argv[0], "echo") == 0) {
     echo(argc, argv);
+
+      // If the user entered environ
   } else if (strcmp(argv[0], "environ") == 0) {
     environ();
+
+      // If the user entered cd
   } else if (strcmp(argv[0], "cd") == 0) {
-    changeDir(argv[1]);
-    //printDir();
+    changeDir(argv);
+    printDir();
+
+     // If the user entered myshell
   } else if (strcmp(argv[0], "myshell") == 0) {
-    // fileIO(args);
+    fileIO(args);
   }
 }
 
 int main () {
-  // int argc, char *argv[]
+
+  // Variables to keep track of user input
   char **argv = malloc(sizeof(char) * TOTAL_STRING_SIZE);
   char *token;
   char spaces[] = " \n\t";
@@ -170,19 +220,22 @@ int main () {
 
     initialize();   ///welcome screen
 
+    // While loop to prompt user to enter command line input as long as the program is still running
     while(1){
 
         shellPrompt();
         //printDir();
 
+        // Resets the argv array and user inputs
         argc = 0;
         for (int i = 0; i < argc; i++) {
           argv[i] = NULL;
         }
 
-        //getline(&input, &len, stdin); // Read the user input
+        // Takes in user input
         fgets(user_command, TOTAL_STRING_SIZE, stdin);
 
+        // Splices the user input into separate words and stores them within the argv array
         token = strtok(user_command, spaces);
         argv[argc] = token;
 
@@ -192,25 +245,7 @@ int main () {
           argv[argc] = token;
         }
 
+        // Sends the user input to the choices function to determine the action based on the input
         choices(argc, argv);
-
-        /*
-        user_command[strlen(user_command) - 1] = '\0';
-
-        if (strcmp(user_command, "clr") == 0) {
-          clearScreen();
-        } else if (strcmp(argv[0], "help") == 0) {
-          help();
-        } else if (strcmp(user_command, "pauses") == 0) {
-          pauses();
-        } else if (strcmp(user_command, "quit") == 0) {
-          quit(argv);
-          break;
-        } else if (strcmp(user_command, "echo") == 0) {
-          echo(argc, argv);
-        } else if (strcmp(user_command, "cd") == 0) {
-          //changeDir(argv);
-        }
-        */
     }
 }
