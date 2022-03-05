@@ -35,17 +35,18 @@ void printDir(void){
     printf("%s ", cwd);
 }
 
-int changeDir(char* path[]) {
-    if (path[1] == NULL){
-        chdir(getenv("HOME"));
-        return 1;
-    }else{
-		if (chdir(path[1]) == -1) {
-			printf(" %s: Directory NOT FOUND!\n", path[1]);
-            return -1;
-		}
-	}
-	return 0;
+int changeDir(char* dir) {
+    char path[125];
+
+    if (dir != NULL){
+        getcwd(path, sizeof(path));
+
+        strncat(path, "/", 1);
+		strncat(path, dir, strlen(dir));		
+		if (chdir(path) < 0)		
+			printf("ERROR: File / Directory could not be found %s\n", dir);			
+		return;	
+    }
 }
 
 void dir(void) {
@@ -103,6 +104,10 @@ void clearScreen(void) {
 	system("clear");
 }
 
+void fileIO(void){
+    
+}
+
 int main (int argc, char *argv[]){
 
   char user_command[TOTAL_STRING_SIZE];
@@ -133,7 +138,7 @@ int main (int argc, char *argv[]){
           changeDir(argv);
         }
 
-
+    
 
     }
 }
