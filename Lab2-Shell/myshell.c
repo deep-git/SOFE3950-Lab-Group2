@@ -27,11 +27,7 @@ void initialize(void){
     printf("\n****************************************************\n");
 }
 
-<<<<<<< Updated upstream
-
-=======
 // Prompts the user
->>>>>>> Stashed changes
 void shellPrompt(void){
   char cwd[PATH_MAX];
   printf(YELLOW "%s$ " NORMALCOLOUR, getcwd(cwd, MAX_SIZE));
@@ -46,7 +42,6 @@ void printDir(void){
     printf("\n%s\n\n", cwd);
 }
 
-<<<<<<< Updated upstream
 void changeDir(char *dir) {
     char cwd[MAX_SIZE];
     
@@ -63,23 +58,6 @@ void changeDir(char *dir) {
       if (chdir(cwd) < 0)             //checks if no file/directory of that name is found 
         printf("ERROR: File / Directory could not be found (%s)\n", dir);
       return;
-=======
-// Function to change the directory
-void changeDir(char* dir) {
-
-    char path[125];
-
-    if (dir != NULL){
-      chdir(dir);
-      putenv(dir);
-      getcwd(path, sizeof(path));
-
-      // strncat(path, "/", 1);
-		strncat(path, dir, strlen(dir));
-		if (chdir(path) < 0)
-			printf("ERROR: File / Directory could not be found %s\n", dir);
-		return;
->>>>>>> Stashed changes
     }
 
 }
@@ -204,7 +182,7 @@ void choices(int argc, char **argv) {
 
      // If the user entered myshell
   } else if (strcmp(argv[0], "myshell") == 0) {
-    fileIO(args);
+    fileIO(argv);
   }
 }
 
