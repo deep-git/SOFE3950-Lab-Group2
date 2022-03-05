@@ -17,7 +17,7 @@ extern void shellPrompt(void);
 extern void printDir(void);
 
 // Change working directory
-extern int changeDir(char* path[]);
+extern void changeDir(char* dir);
 
 // List contents of directory
 extern void dir(void);

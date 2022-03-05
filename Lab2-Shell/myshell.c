@@ -7,6 +7,8 @@
 
 #define STRING_NUM 8
 #define TOTAL_STRING_SIZE 500
+#define MAX_SIZE 1024
+
 #define LIGHTBLUE "\033[1m\033[34m"
 #define BLUE "\033[0;34m"
 #define YELLOW "\033[1m\033[33m"
@@ -35,16 +37,16 @@ void printDir(void){
     printf("%s ", cwd);
 }
 
-int changeDir(char* dir) {
+void changeDir(char* dir) {
     char path[125];
 
     if (dir != NULL){
         getcwd(path, sizeof(path));
 
         strncat(path, "/", 1);
-		strncat(path, dir, strlen(dir));		
+        strncat(path, dir, strlen(dir));		
 		if (chdir(path) < 0)		
-			printf("ERROR: File / Directory could not be found %s\n", dir);			
+			printf("ERROR: File / Directory could not be found %s\n", dir);				
 		return;	
     }
 }
@@ -104,8 +106,25 @@ void clearScreen(void) {
 	system("clear");
 }
 
-void fileIO(void){
-    
+void fileIO(char* path){
+    int commands[MAX_SIZE];
+    int i = 0;
+
+    FILE *file;
+
+    if (file = fopen(path, "r")){
+        while (fscanf(file, "%d", &commands[i]) != EOF){
+            i++;
+        }
+        fclose(file);
+
+        commands[i] = '\0';
+
+        for (i=0; commands[i] != '\0'; i++){
+            //pass to commandHandler
+        }
+
+    }
 }
 
 int main (int argc, char *argv[]){
@@ -135,7 +154,7 @@ int main (int argc, char *argv[]){
         } else if (strcmp(user_command, "echo") == 0) {
           echo(argc, argv);
         } else if (strcmp(user_command, "cd") == 0) {
-          changeDir(argv);
+          changeDir(argv[1]);
         }
 
     
