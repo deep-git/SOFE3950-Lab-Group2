@@ -24,17 +24,20 @@ void initialize(void){
     printf("\n      This is a Shell/Command Line Interpreter");
     printf("\n                  Written in C");
     printf("\n****************************************************\n");
-
 }
 
+
 void shellPrompt(void){
-  printf(YELLOW "~/myShell$ " NORMALCOLOUR);
+  char cwd[PATH_MAX];
+  printf(YELLOW "%s$ " NORMALCOLOUR, getcwd(cwd, MAX_SIZE));
+  //printf(YELLOW "%s" NORMALCOLOUR, "~/myShell$ ");             
+
 }
 
 void printDir(void){
     char cwd[PATH_MAX];
     getcwd(cwd, sizeof(cwd));
-    printf("%s ", cwd);
+    printf("\n%s\n\n", cwd);
 }
 
 void changeDir(char *dir) {
@@ -42,15 +45,15 @@ void changeDir(char *dir) {
     
     if (dir != NULL){
       // printf("I am here");
-      putenv(dir);
-      getcwd(cwd, sizeof(cwd));
+      putenv(dir);                    
+      getcwd(cwd, sizeof(cwd));       //grab current dir
 
-      strncat(cwd, "/", 2);
-		  strncat(cwd, dir, strlen(dir));
+      strncat(cwd, "/", 2);               
+		  strncat(cwd, dir, strlen(dir)); //apppend change in directory to cwd
 
-      printf("\n%s\n\n", cwd);
+      //printf("\n%s\n\n", cwd);        //testing - display current directory
 
-      if (chdir(cwd) < 0)
+      if (chdir(cwd) < 0)             //checks if no file/directory of that name is found 
         printf("ERROR: File / Directory could not be found (%s)\n", dir);
       return;
     }
