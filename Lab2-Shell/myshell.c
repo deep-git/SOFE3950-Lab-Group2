@@ -37,22 +37,24 @@ void printDir(void){
     printf("%s ", cwd);
 }
 
-void changeDir(char* dir) {
-
-    char path[125];
-
+void changeDir(char *dir) {
+    char cwd[MAX_SIZE];
+    
     if (dir != NULL){
-      chdir(dir);
+      // printf("I am here");
       putenv(dir);
-      getcwd(path, sizeof(path));
+      getcwd(cwd, sizeof(cwd));
 
-      // strncat(path, "/", 1);
-		strncat(path, dir, strlen(dir));
-		if (chdir(path) < 0)
-			printf("ERROR: File / Directory could not be found %s\n", dir);
-		return;
+      strncat(cwd, "/", 2);
+		  strncat(cwd, dir, strlen(dir));
+
+      printf("\n%s\n\n", cwd);
+
+      if (chdir(cwd) < 0)
+        printf("ERROR: File / Directory could not be found (%s)\n", dir);
+      return;
     }
-
+    
 }
 
 void dir(void) {
@@ -147,8 +149,8 @@ void choices(int argc, char **argv) {
   } else if (strcmp(argv[0], "environ") == 0) {
     environ();
   } else if (strcmp(argv[0], "cd") == 0) {
-    // changeDir(argv);
-    printDir();
+    changeDir(argv[1]);
+    //printDir();
   } else if (strcmp(argv[0], "myshell") == 0) {
     // fileIO(args);
   }
