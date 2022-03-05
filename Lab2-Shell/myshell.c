@@ -184,7 +184,7 @@ void choices(int argc, char **argv) {
 
      // If the user entered myshell
   } else if (strcmp(argv[0], "myshell") == 0) {
-    fileIO(args);
+    fileIO(argv);
   }
 }
 
