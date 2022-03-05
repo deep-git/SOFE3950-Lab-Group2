@@ -42,9 +42,11 @@ void changeDir(char* dir) {
     char path[125];
 
     if (dir != NULL){
-        getcwd(path, sizeof(path));
+      chdir(dir);
+      putenv(dir);
+      getcwd(path, sizeof(path));
 
-        strncat(path, "/", 1);
+      // strncat(path, "/", 1);
 		strncat(path, dir, strlen(dir));
 		if (chdir(path) < 0)
 			printf("ERROR: File / Directory could not be found %s\n", dir);
@@ -109,7 +111,7 @@ void clearScreen(void) {
 	system("clear");
 }
 
-void fileIO(char* path){
+void fileIO(char *path){
   int commands[MAX_SIZE];
   int i = 0;
 
@@ -143,7 +145,10 @@ void choices(int argc, char **argv) {
   } else if (strcmp(argv[0], "echo") == 0) {
     echo(argc, argv);
   } else if (strcmp(argv[0], "cd") == 0) {
-    //changeDir(argv);
+    // changeDir(argv);
+    printDir();
+  } else if (strcmp(argv[0], "myshell") == 0) {
+    // fileIO(args);
   }
 }
 
