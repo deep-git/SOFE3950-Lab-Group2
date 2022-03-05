@@ -5,6 +5,11 @@
 #include <linux/limits.h>
 #include "myshell.h"
 
+// Roniel Casaclang 100755336
+// Deepak Thangella 100695929
+// Lorenzo Caguimbal 100555976
+// Yousif Sarmad 100746887
+
 // Define specifications
 #define STRING_NUM 8
 #define TOTAL_STRING_SIZE 500
@@ -25,39 +30,36 @@ void initialize(void){
     printf("\n      This is a Shell/Command Line Interpreter");
     printf("\n                  Written in C");
     printf("\n****************************************************\n");
+
 }
 
 // Prompts the user
 void shellPrompt(void){
-  char cwd[PATH_MAX];
-  printf(YELLOW "%s$ " NORMALCOLOUR, getcwd(cwd, MAX_SIZE));
-  //printf(YELLOW "%s" NORMALCOLOUR, "~/myShell$ ");             
-
+  printf(YELLOW "~/myShell$ " NORMALCOLOUR);
 }
 
 // Prints the current directory
 void printDir(void){
     char cwd[PATH_MAX];
     getcwd(cwd, sizeof(cwd));
-    printf("\n%s\n\n", cwd);
+    printf("%s ", cwd);
 }
 
-void changeDir(char *dir) {
-    char cwd[MAX_SIZE];
-    
+// Function to change the directory
+void changeDir(char* dir) {
+
+    char path[125];
+
     if (dir != NULL){
-      // printf("I am here");
-      putenv(dir);                    
-      getcwd(cwd, sizeof(cwd));       //grab current dir
+      chdir(dir);
+      putenv(dir);
+      getcwd(path, sizeof(path));
 
-      strncat(cwd, "/", 2);               
-		  strncat(cwd, dir, strlen(dir)); //apppend change in directory to cwd
-
-      //printf("\n%s\n\n", cwd);        //testing - display current directory
-
-      if (chdir(cwd) < 0)             //checks if no file/directory of that name is found 
-        printf("ERROR: File / Directory could not be found (%s)\n", dir);
-      return;
+      // strncat(path, "/", 1);
+		strncat(path, dir, strlen(dir));
+		if (chdir(path) < 0)
+			printf("ERROR: File / Directory could not be found %s\n", dir);
+		return;
     }
 
 }
@@ -182,7 +184,7 @@ void choices(int argc, char **argv) {
 
      // If the user entered myshell
   } else if (strcmp(argv[0], "myshell") == 0) {
-    fileIO(argv);
+    fileIO(args);
   }
 }
 
