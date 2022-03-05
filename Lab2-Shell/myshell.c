@@ -7,8 +7,6 @@
 
 #define STRING_NUM 8
 #define TOTAL_STRING_SIZE 500
-#define MAX_SIZE 1024
-
 #define LIGHTBLUE "\033[1m\033[34m"
 #define BLUE "\033[0;34m"
 #define YELLOW "\033[1m\033[33m"
@@ -37,19 +35,24 @@ void printDir(void){
     printf("%s ", cwd);
 }
 
-void changeDir(char* dir) {
+
+int changeDir(char* dir) {
+
     char path[125];
 
     if (dir != NULL){
         getcwd(path, sizeof(path));
 
         strncat(path, "/", 1);
-        strncat(path, dir, strlen(dir));		
-		if (chdir(path) < 0)		
-			printf("ERROR: File / Directory could not be found %s\n", dir);				
-		return;	
+		strncat(path, dir, strlen(dir));
+		if (chdir(path) < 0)
+			printf("ERROR: File / Directory could not be found %s\n", dir);
+		return;
     }
+
 }
+
+
 
 void dir(void) {
 }
@@ -106,28 +109,33 @@ void clearScreen(void) {
 	system("clear");
 }
 
-void fileIO(char* path){
-    int commands[MAX_SIZE];
-    int i = 0;
+void fileIO(void){
 
-    FILE *file;
-
-    if (file = fopen(path, "r")){
-        while (fscanf(file, "%d", &commands[i]) != EOF){
-            i++;
-        }
-        fclose(file);
-
-        commands[i] = '\0';
-
-        for (i=0; commands[i] != '\0'; i++){
-            //pass to commandHandler
-        }
-
-    }
 }
 
-int main (int argc, char *argv[]){
+void choices(int argc, char **argv) {
+  if (strcmp(argv[0], "clr") == 0) {
+    clearScreen();
+  } else if (strcmp(argv[0], "help") == 0) {
+    help();
+  } else if (strcmp(argv[0], "pauses") == 0) {
+    pauses();
+  } else if (strcmp(argv[0], "quit") == 0) {
+    quit(argv);
+    exit(0);
+  } else if (strcmp(argv[0], "echo") == 0) {
+    echo(argc, argv);
+  } else if (strcmp(argv[0], "cd") == 0) {
+    //changeDir(argv);
+  }
+}
+
+int main () {
+  // int argc, char *argv[]
+  char **argv = malloc(sizeof(char) * TOTAL_STRING_SIZE);
+  char *token;
+  char spaces[] = " \n\t";
+  int argc = 0;
 
   char user_command[TOTAL_STRING_SIZE];
 
@@ -140,11 +148,24 @@ int main (int argc, char *argv[]){
 
         //getline(&input, &len, stdin); // Read the user input
         fgets(user_command, TOTAL_STRING_SIZE, stdin);
+
+        token = strtok(user_command, spaces);
+        argv[argc] = token;
+
+        while (token != NULL) {
+          token = strtok(NULL, spaces);
+          argc++;
+          argv[argc] = token;
+        }
+
+        choices(argc, argv);
+
+        /*
         user_command[strlen(user_command) - 1] = '\0';
 
         if (strcmp(user_command, "clr") == 0) {
           clearScreen();
-        } else if (strcmp(user_command, "help") == 0) {
+        } else if (strcmp(argv[0], "help") == 0) {
           help();
         } else if (strcmp(user_command, "pauses") == 0) {
           pauses();
@@ -154,10 +175,8 @@ int main (int argc, char *argv[]){
         } else if (strcmp(user_command, "echo") == 0) {
           echo(argc, argv);
         } else if (strcmp(user_command, "cd") == 0) {
-          changeDir(argv[1]);
+          //changeDir(argv);
         }
-
-    
-
+        */
     }
 }
