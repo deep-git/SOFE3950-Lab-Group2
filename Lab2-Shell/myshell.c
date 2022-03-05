@@ -67,9 +67,10 @@ void environ(void) {
 
 void echo(int argc, char **argv) {
 	if (argv[1] != NULL) {
-		for (int i = 0; i < argc; i++) {
-			printf("%s \n", argv[i]);
+		for (int i = 1; i < argc; i++) {
+			printf("%s ", argv[i]);
 		}
+    printf("\n");
 	} else {
 		printf("Invalid echo format \n");
 	}
@@ -111,7 +112,7 @@ void clearScreen(void) {
 void fileIO(char* path){
   int commands[MAX_SIZE];
   int i = 0;
-  
+
   FILE *file;
 
   if ( (file = fopen(path, "r")) ){
@@ -161,6 +162,11 @@ int main () {
 
         shellPrompt();
         //printDir();
+
+        argc = 0;
+        for (int i = 0; i < argc; i++) {
+          argv[i] = NULL;
+        }
 
         //getline(&input, &len, stdin); // Read the user input
         fgets(user_command, TOTAL_STRING_SIZE, stdin);
