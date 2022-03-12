@@ -6,6 +6,7 @@
 typedef struct {
     int row;
     int column;
+    int (* grid_numbers)[9];
 } parameters;
 
 /*
@@ -30,11 +31,12 @@ int main (void) {
 
   FILE *file; // Declaring a file pointer
   //char buffer[1024];
+  int grid_numbers[9][9];
 
   file = fopen("Lab3 puzzle.txt", "r"); // Opening the file with read permissions
 
   //fgets(buffer, sizeof(buffer), fp); // Reading from file into the buffer variable
-
+  /*
   if (file == NULL) {
       printf("Error opening the file");
       return 1;
@@ -53,9 +55,21 @@ int main (void) {
   }
 
   fclose(file);
+  */
 
+  if (file != NULL) {
+    for (int i = 0; i < 9; i++) {
+      printf("\n");
+      for (int j = 0; j < 9; j++) {
+          fscanf(file, "%d", &grid_numbers[i][j]);
+          printf("%d", grid_numbers[i][j]);
+      }
+    }
+  } else {
+    printf("Error opening the file");
+  }
 
-
+fclose(file);
 
     // Create parameters for each data pointer and thread (11 threads)
     parameters *data0 = (parameters *) malloc(sizeof(parameters));
