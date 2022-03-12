@@ -8,6 +8,7 @@ typedef struct {
     int column;
 } parameters;
 
+/*
 static int sudoku_board[9][9] = {
                                 {5, 3, 0, 0, 7, 0, 0, 0, 0},
                                 {6, 0, 0, 1, 9, 5, 0, 0, 0},
@@ -19,11 +20,42 @@ static int sudoku_board[9][9] = {
                                 {0, 0, 0, 4, 1, 9, 0, 0, 5},
                                 {0, 0, 0, 0, 8, 0, 0, 7, 9}
                             };
+*/
 
 int * count_rows(void * data);
 int * count_columns(void * data);
 
+
 int main (void) {
+
+  FILE *file; // Declaring a file pointer
+  //char buffer[1024];
+
+  file = fopen("Lab3 puzzle.txt", "r"); // Opening the file with read permissions
+
+  //fgets(buffer, sizeof(buffer), fp); // Reading from file into the buffer variable
+
+  if (file == NULL) {
+      printf("Error opening the file");
+      return 1;
+  }
+
+  int line_num = 0;
+  char c = 0;
+
+  c = fgetc(file);
+
+  while (c != EOF) {
+
+      printf("%c", c);
+      c = fgetc(file);
+
+  }
+
+  fclose(file);
+
+
+
 
     // Create parameters for each data pointer and thread (11 threads)
     parameters *data0 = (parameters *) malloc(sizeof(parameters));
@@ -65,7 +97,6 @@ int main (void) {
     parameters *data9 = (parameters *) malloc(sizeof(parameters));
     data9->row = 6;
     data9->column = 6;
-
 
     // Create threads
     pthread_t t_row, t_col, t_1, t_2, t_3, t_4, t_5, t_6, t_7, t_8, t_9;
@@ -135,6 +166,7 @@ int * count_rows(void * data) {
 // Checks whether or not the columns contain numbers 1-9, if they do, then return 1
 int * count_columns(void * data) {
 
+    /*
     for (int i = 0; i < 9; i++) {
         for (int j = 0; j <= 9; j++) {
             int count = 0;
@@ -150,6 +182,7 @@ int * count_columns(void * data) {
     }
 
     return 1;
+    */
 
 }
 
