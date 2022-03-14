@@ -25,6 +25,7 @@ static int sudoku_board[9][9] = {
 
 int * count_rows(void * data);
 int * count_columns(void * data);
+void * validate_number(void * data);
 
 
 int main (void) {
@@ -66,10 +67,12 @@ int main (void) {
       }
     }
   } else {
-    printf("Error opening the file");
+    printf("Error opening the file.\n");
   }
 
 fclose(file);
+
+printf("\n");
 
     // Create parameters for each data pointer and thread (11 threads)
     parameters *data0 = (parameters *) malloc(sizeof(parameters));
@@ -115,8 +118,8 @@ fclose(file);
     // Create threads
     pthread_t t_row, t_col, t_1, t_2, t_3, t_4, t_5, t_6, t_7, t_8, t_9;
 
-    pthread_create(&t_row, NULL, count_rows, (int *) data0);
-    pthread_create(&t_col, NULL, count_columns, (int *) data0);
+    pthread_create(&t_row, NULL, count_rows, (void *) data0);
+    pthread_create(&t_col, NULL, count_columns, (void *) data0);
     pthread_create(&t_1, NULL, validate_number, (void *) data1);
     pthread_create(&t_2, NULL, validate_number, (void *) data2);
     pthread_create(&t_3, NULL, validate_number, (void *) data3);
@@ -153,9 +156,9 @@ fclose(file);
 
     if ((int) rows == 1 && (int) columns == 1 && (int) grid1 == 1 && (int) grid2 == 1 && (int) grid3 == 1 && (int) grid4 == 1 && (int) grid5 == 1 && (int) grid6 == 1 &&
     (int) grid7 == 1 && (int) grid8 == 1 && (int) grid9 == 1) {
-        printf("The sudoku puzzle was solved successfully, congratulations!");
+        printf("The sudoku puzzle was solved successfully, congratulations!\n");
     } else {
-        printf("The sudoku puzzle is not solved correctly, please try again");
+        printf("The sudoku puzzle is not solved correctly, please try again\n");
     }
 
     return 0;
