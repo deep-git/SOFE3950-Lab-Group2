@@ -3,7 +3,8 @@
 #include <string.h>
 #include <pthread.h>
 
-#define COUNT 9
+#define COUNT 9     //num or row/column/grid
+#define TOTAL 45    //sum of numbers
 
 typedef struct grid {
     int row;
@@ -66,51 +67,34 @@ printf("\n");
 
     // Create parameters for each data pointer and thread (11 threads)
     parameters *data0 = (parameters *) malloc(sizeof(parameters));
-    data0->row = 0;
-    data0->column = 0;
+    data0->row = 0; data0->column = 0;
 
+    // grid parameters
     parameters *data1 = (parameters *) malloc(sizeof(parameters));
-    data1->row = 0;
-    data1->column = 0;
-
+    data1->row = 0; data1->column = 0;
     parameters *data2 = (parameters *) malloc(sizeof(parameters));
-    data2->row = 0;
-    data2->column = 3;
-
+    data2->row = 0; data2->column = 3;
     parameters *data3 = (parameters *) malloc(sizeof(parameters));
-    data3->row = 0;
-    data3->column = 6;
-
+    data3->row = 0; data3->column = 6;
     parameters *data4 = (parameters *) malloc(sizeof(parameters));
-    data4->row = 3;
-    data4->column = 0;
-
+    data4->row = 3; data4->column = 0;
     parameters *data5 = (parameters *) malloc(sizeof(parameters));
-    data5->row = 3;
-    data5->column = 3;
-
+    data5->row = 3; data5->column = 3;
     parameters *data6 = (parameters *) malloc(sizeof(parameters));
-    data6->row = 3;
-    data6->column = 6;
-
+    data6->row = 3; data6->column = 6;
     parameters *data7 = (parameters *) malloc(sizeof(parameters));
-    data7->row = 6;
-    data7->column = 0;
-
+    data7->row = 6; data7->column = 0;
     parameters *data8 = (parameters *) malloc(sizeof(parameters));
-    data8->row = 6;
-    data8->column = 3;
-
+    data8->row = 6; data8->column = 3;
     parameters *data9 = (parameters *) malloc(sizeof(parameters));
-    data9->row = 6;
-    data9->column = 6;
+    data9->row = 6; data9->column = 6;
 
     // Create threads
     pthread_t t_row, t_col, t_1, t_2, t_3, t_4, t_5, t_6, t_7, t_8, t_9;
 
     pthread_create(&t_row, NULL, count_rows, data0);
     pthread_create(&t_col, NULL, count_columns, data0);
-    pthread_create(&t_1, NULL, validate_number, data1);
+    pthread_create(&t_1, NULL, validate_number, data2);
     pthread_create(&t_2, NULL, validate_number, data2);
     pthread_create(&t_3, NULL, validate_number, data3);
     pthread_create(&t_4, NULL, validate_number, data4);
@@ -185,25 +169,21 @@ void * count_rows(void * data) {
 
   for (int i = count_rows; i < COUNT; i++) {
 
-    for (int j = count_columns; j < COUNT; i++) {
+    for (int j = count_columns; j < COUNT; j++) {
 
       int num_valid = grid_numbers[i][j];
 
       if (num_valid < 0 || num_valid > 9 || valid_row[num_valid - 1] == 1) {
-        // for (int i = 0; i < COUNT; i++) {     
-        //   printf("%d ", valid[i]);
-        // }
-        
         pthread_exit(NULL);
 
       } else {
         valid_row[num_valid - 1] = 1;
+        
       }
 
     }
+    valid[0] = 1;
   }
-
-  valid[0] = 1;
 
   pthread_exit(NULL);
 }
@@ -218,9 +198,10 @@ void * count_columns(void * data) {
 
   for (int i = count_columns; i < COUNT; i++) {
 
-    for (int j = count_rows; j < COUNT; i++) {
+    for (int j = count_rows; j < COUNT; j++) {
 
       int num_valid = grid_numbers[j][i];
+
 
       if (num_valid < 0 || num_valid > 9 || valid_columns[num_valid - 1] == 1) {
         pthread_exit(NULL);
@@ -230,9 +211,8 @@ void * count_columns(void * data) {
       }
 
     }
+    valid[1] = 1;
   }
-
-  valid[1] = 1;
 
 
   pthread_exit(NULL);
@@ -246,9 +226,9 @@ void * validate_number(void * data) {
   int count_columns = data_entry->column;
   int valid_grid[COUNT] = {0, 0, 0, 0, 0, 0, 0, 0, 0};
 
-  for (int i = count_rows; i < count_rows + 3; i++) {
+  for (int i = count_rows; i < COUNT; i++) {
 
-    for (int j = count_columns; j < count_columns + 3; j++) {
+    for (int j = count_columns; j < COUNT; j++) {
 
       int num_valid = grid_numbers[i][j];
 
