@@ -29,17 +29,28 @@ void * count_columns(void * data);
 void * validate_number(void * data);
 
 int grid_numbers[9][9];
-int valid[11] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+int valid[11] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 
-int main (void) {
-
+int main (int argc, char **argv) {
+  (void)argc; // disregard argc
   FILE *file; // Declaring a file pointer
 
-  file = fopen("solution.txt", "r"); // Opening the file with read permissions
+  //Prompt user how to initiate program
+  if(argc < 2){
+    printf("--------------------------------------\n");
+    printf("USAGE: ./sudoku-validator.o <filename>\n");
+    printf("--------------------------------------\n");
+    exit(0);
+  }
+
+  // file = fopen("puzzle.txt", "r"); // Opening the file with read permissions
+  file = fopen(argv[1], "r"); // Opening the file (argument) with read permission
+
+  printf("\nSudoku Solution Validator");
 
   if (file != NULL) {
     for (int i = 0; i < 9; i++) {
-      printf("\n");
+      printf("\n    ");
       for (int j = 0; j < 9; j++) {
           fscanf(file, "%d", &grid_numbers[i][j]);
           printf("%d ", grid_numbers[i][j]);
@@ -142,15 +153,25 @@ printf("\n");
     }
     */
 
+    printf("\n");
+
+    //testing - print valid array
+    printf("VALIDITY TRACKER\n1st num = [rows], 2nd num = [columns], rest = [grid]\n");
+    for (int i = 0; i < 11; i++) {     
+      printf("%d ", valid[i]);
+    }
+
+    printf("\n");
+
+    //Prompt user if given puzzle is valid or not
     for (int i = 0; i < 11; i++) {
       if (valid[i] == 0) {
-        printf("\nThe sudoku puzzle is not solved correctly, please try again\n");
+        printf("\nThe sudoku puzzle is NOT SOLVED correctly, please try again\n\n");
         return 0;
       }
     }
 
-    printf("\nThe sudoku puzzle was solved successfully, congratulations!\n");
-
+    printf("\nThe sudoku puzzle was SOVLED successfully, congratulations!\n\n");
     return 0;
 }
 
@@ -169,6 +190,10 @@ void * count_rows(void * data) {
       int num_valid = grid_numbers[i][j];
 
       if (num_valid < 0 || num_valid > 9 || valid_row[num_valid - 1] == 1) {
+        // for (int i = 0; i < COUNT; i++) {     
+        //   printf("%d ", valid[i]);
+        // }
+        
         pthread_exit(NULL);
 
       } else {
@@ -209,7 +234,7 @@ void * count_columns(void * data) {
 
   valid[1] = 1;
 
-  printf("%d", valid_columns[1]);
+
   pthread_exit(NULL);
 }
 
@@ -237,7 +262,7 @@ void * validate_number(void * data) {
     }
   }
 
-  for (int i = 2; i < COUNT; i++) {
+  for (int i = 2; i < COUNT+2; i++) {
       valid[i] = 1;
   }
 
