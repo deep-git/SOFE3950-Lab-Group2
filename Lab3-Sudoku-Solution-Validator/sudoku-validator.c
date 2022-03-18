@@ -128,20 +128,11 @@ printf("\n");
     pthread_join(t_8, &grid8);
     pthread_join(t_9, &grid9);
 
-    /*
-    if ((int) rows == 1 && (int) columns == 1 && (int) grid1 == 1 && (int) grid2 == 1 && (int) grid3 == 1 && (int) grid4 == 1 && (int) grid5 == 1 && (int) grid6 == 1 &&
-    (int) grid7 == 1 && (int) grid8 == 1 && (int) grid9 == 1) {
-        printf("The sudoku puzzle was solved successfully, congratulations!\n");
-    } else {
-        printf("The sudoku puzzle is not solved correctly, please try again\n");
-    }
-    */
-
     printf("\n");
 
     //testing - print valid array
     printf("VALIDITY TRACKER\n1st num = [rows], 2nd num = [columns], rest = [grid]\n");
-    for (int i = 0; i < 11; i++) {     
+    for (int i = 0; i < 11; i++) {
       printf("%d ", valid[i]);
     }
 
@@ -155,7 +146,7 @@ printf("\n");
       }
     }
 
-    printf("\nThe sudoku puzzle was SOVLED successfully, congratulations!\n\n");
+    printf("\nThe sudoku puzzle was SOLVED successfully, congratulations!\n\n");
     return 0;
 }
 
@@ -178,7 +169,7 @@ void * count_rows(void * data) {
 
       } else {
         valid_row[num_valid - 1] = 1;
-        
+
       }
 
     }
