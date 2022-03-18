@@ -35,14 +35,14 @@ int main (void) {
 
   FILE *file; // Declaring a file pointer
 
-  file = fopen("Lab3 puzzle.txt", "r"); // Opening the file with read permissions
+  file = fopen("solution.txt", "r"); // Opening the file with read permissions
 
   if (file != NULL) {
     for (int i = 0; i < 9; i++) {
       printf("\n");
       for (int j = 0; j < 9; j++) {
           fscanf(file, "%d", &grid_numbers[i][j]);
-          printf("%d", grid_numbers[i][j]);
+          printf("%d ", grid_numbers[i][j]);
       }
     }
   } else {
@@ -144,12 +144,12 @@ printf("\n");
 
     for (int i = 0; i < 11; i++) {
       if (valid[i] == 0) {
-        printf("The sudoku puzzle is not solved correctly, please try again\n");
+        printf("\nThe sudoku puzzle is not solved correctly, please try again\n");
         return 0;
       }
     }
 
-    printf("The sudoku puzzle was solved successfully, congratulations!\n");
+    printf("\nThe sudoku puzzle was solved successfully, congratulations!\n");
 
     return 0;
 }
@@ -209,6 +209,7 @@ void * count_columns(void * data) {
 
   valid[1] = 1;
 
+  printf("%d", valid_columns[1]);
   pthread_exit(NULL);
 }
 
