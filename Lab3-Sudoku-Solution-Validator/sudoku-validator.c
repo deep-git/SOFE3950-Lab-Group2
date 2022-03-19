@@ -6,30 +6,21 @@
 #define COUNT 9     //num or row/column/grid
 #define TOTAL 45    //sum of numbers
 
+// Structure for containing the row and columns
 typedef struct grid {
     int row;
     int column;
 } parameters;
 
-/*
-static int sudoku_board[9][9] = {
-                                {5, 3, 0, 0, 7, 0, 0, 0, 0},
-                                {6, 0, 0, 1, 9, 5, 0, 0, 0},
-                                {0, 9, 8, 0, 0, 0, 0, 6, 0},
-                                {8, 0, 0, 0, 6, 0, 0, 0, 3},
-                                {4, 0, 0, 8, 0, 3, 0, 0, 1},
-                                {7, 0, 0, 0, 2, 0, 0, 0, 6},
-                                {0, 6, 0, 0, 0, 0, 2, 8, 0},
-                                {0, 0, 0, 4, 1, 9, 0, 0, 5},
-                                {0, 0, 0, 0, 8, 0, 0, 7, 9}
-                            };
-*/
-
+// Initialize the functions
 void * count_rows(void * data);
 void * count_columns(void * data);
 void * validate_number(void * data);
 
+// Declare the sudoku board array
 int grid_numbers[9][9];
+
+// Declare and initialize the array for checking valid board solution
 int valid[11] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 
 int main (int argc, char **argv) {
@@ -49,18 +40,25 @@ int main (int argc, char **argv) {
 
   printf("\nSudoku Solution Validator");
 
+  // If the file opens, read the board inputs into the grid_numbers array
   if (file != NULL) {
     for (int i = 0; i < 9; i++) {
       printf("\n    ");
       for (int j = 0; j < 9; j++) {
+        // Stores the board numbers from the file in the array
           fscanf(file, "%d", &grid_numbers[i][j]);
+
+          // Prints the board
           printf("%d ", grid_numbers[i][j]);
       }
     }
+
+    // If the file does not open, show error message
   } else {
     printf("Error opening the file.\n");
   }
 
+// Close the file
 fclose(file);
 
 printf("\n");
@@ -69,7 +67,7 @@ printf("\n");
     parameters *data0 = (parameters *) malloc(sizeof(parameters));
     data0->row = 0; data0->column = 0;
 
-    // grid parameters
+    // Grid parameters
     parameters *data1 = (parameters *) malloc(sizeof(parameters));
     data1->row = 0; data1->column = 0;
     parameters *data2 = (parameters *) malloc(sizeof(parameters));
@@ -89,9 +87,10 @@ printf("\n");
     parameters *data9 = (parameters *) malloc(sizeof(parameters));
     data9->row = 6; data9->column = 6;
 
-    // Create threads
+    // Initialize the threads
     pthread_t t_row, t_col, t_1, t_2, t_3, t_4, t_5, t_6, t_7, t_8, t_9;
 
+    // Create the threads
     pthread_create(&t_row, NULL, count_rows, data0);
     pthread_create(&t_col, NULL, count_columns, data0);
     pthread_create(&t_1, NULL, validate_number, data2);
@@ -104,6 +103,7 @@ printf("\n");
     pthread_create(&t_8, NULL, validate_number, data8);
     pthread_create(&t_9, NULL, validate_number, data9);
 
+    // Initialize variables to store the thread results after thread joining
     void * rows;
     void * columns;
     void * grid1;
@@ -116,6 +116,7 @@ printf("\n");
     void * grid8;
     void * grid9;
 
+    // Join the threads
     pthread_join(t_row, &rows);
     pthread_join(t_col, &columns);
     pthread_join(t_1, &grid1);
@@ -140,12 +141,14 @@ printf("\n");
 
     //Prompt user if given puzzle is valid or not
     for (int i = 0; i < 11; i++) {
+      // If not valid, print that the puzzle is not solved correctly
       if (valid[i] == 0) {
         printf("\nThe sudoku puzzle is NOT SOLVED correctly, please try again\n\n");
         return 0;
       }
     }
 
+    // If valid, print that the puzzle was solved successfully
     printf("\nThe sudoku puzzle was SOLVED successfully, congratulations!\n\n");
     return 0;
 }
@@ -153,29 +156,40 @@ printf("\n");
 // Checks whether or not the rows contain numbers 1-9, if they do, then return 1
 void * count_rows(void * data) {
 
+  // Creates parameter entry equal to the argument
   parameters *data_entry = (parameters *) data;
+  // Sets the count_rows and count_columns variables equal to the row and column number of that entry
   int count_rows = data_entry->row;
   int count_columns = data_entry->column;
+
+  // Initial valid row entry is 0
   int valid_row[COUNT] = {0, 0, 0, 0, 0, 0, 0, 0, 0};
 
+  // Nested loop to go through the board and check if the rows contain numbers 1-9
   for (int i = count_rows; i < COUNT; i++) {
 
     for (int j = count_columns; j < COUNT; j++) {
 
+      // Declares and initializes the num_valid variable equal to the number at the specified grid location
       int num_valid = grid_numbers[i][j];
 
+      // If invalid or double number exists, exit the thread
       if (num_valid < 0 || num_valid > 9 || valid_row[num_valid - 1] == 1) {
         pthread_exit(NULL);
 
       } else {
+        // Sets the valid_row array of entry num_valid equal to 1 to show that row is valid
         valid_row[num_valid - 1] = 1;
 
       }
 
     }
+
+    // Change the valid to 1 to show that the row is valid
     valid[0] = 1;
   }
 
+  // Exits the thread
   pthread_exit(NULL);
 }
 
@@ -185,8 +199,10 @@ void * count_columns(void * data) {
   parameters *data_entry = (parameters *) data;
   int count_rows = data_entry->row;
   int count_columns = data_entry->column;
+  // Initial valid column entry is 0
   int valid_columns[COUNT] = {0, 0, 0, 0, 0, 0, 0, 0, 0};
 
+  // Nested loop to go through the board and check if the columns contain numbers 1-9
   for (int i = count_columns; i < COUNT; i++) {
 
     for (int j = count_rows; j < COUNT; j++) {
@@ -202,9 +218,9 @@ void * count_columns(void * data) {
       }
 
     }
+    // Change the valid to 1 to show that the column is valid
     valid[1] = 1;
   }
-
 
   pthread_exit(NULL);
 }
@@ -215,8 +231,10 @@ void * validate_number(void * data) {
   parameters *data_entry = (parameters *) data;
   int count_rows = data_entry->row;
   int count_columns = data_entry->column;
+  // Initial valid grid entry is 0
   int valid_grid[COUNT] = {0, 0, 0, 0, 0, 0, 0, 0, 0};
 
+  // Nested loop to go through the board and check if the grids contain numbers 1-9
   for (int i = count_rows; i < COUNT; i++) {
 
     for (int j = count_columns; j < COUNT; j++) {
@@ -233,6 +251,7 @@ void * validate_number(void * data) {
     }
   }
 
+  // Change the valid to 1 to show that all the 3x3 grids are valid
   for (int i = 2; i < COUNT+2; i++) {
       valid[i] = 1;
   }
