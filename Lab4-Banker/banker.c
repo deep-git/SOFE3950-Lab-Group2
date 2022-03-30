@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <pthread.h>
+#include <stdint.h>
 #include <math.h>
 #include <signal.h>
 #include <unistd.h>
@@ -12,7 +13,6 @@
 #define NUM_RESOURCES 3
 
 // Declare mutex
-pthread_mutex_t mutex;
 pthread_mutex_t mutex_available;
 pthread_mutex_t mutex_allocation;
 pthread_mutex_t mutex_need;
@@ -31,47 +31,90 @@ int need[NUM_CUSTOMERS][NUM_RESOURCES];
 
 int request_resources(int customer_num, int request[]);
 int release_resources(int customer_num, int release[]);
+void print_matrix(int matrix[NUM_CUSTOMERS][NUM_RESOURCES], char *name);
+int checkSafe(int num);
 
-// Generate matrix with random numbers up to available[j]
-void generate_matrix() {
-  srand(time(NULL));
+int checkSafe(int num) {
+  int work[num];
+  int finish[num];
+
+  for (int i = 0; i < NUM_RESOURCES; i++) {
+    work[num] = available[i];
+  }
+
+  finish[num] = -1;
 
   for (int i = 0; i < NUM_CUSTOMERS; i++) {
     for (int j = 0; j < NUM_RESOURCES; j++) {
-      maximum[i][j] = rand() % available[j];
-      allocation[i][j] = 0;
+        if (finish[i] == -1 && need[i][j] <= work[i]) {
+          return -1;
+        } else {
+          work[i] = work[i] + allocation[i][j];
+          finish[i] = 0;
+        }
     }
   }
 
+  return 0;
 }
 
 // Customer shared thread function for the request of resources
 int request_resources(int customer_num, int request[]) {
+  int safe = 0;
 
-  // Loop to check through each resource
   for (int i = 0; i < NUM_RESOURCES; i++) {
+    if (request[i] > need[customer_num][i]) {
+      return -1;
+    } else if (request[i] > available[i]) {
+        return -1;
+    } else {
 
-    pthread_mutex_lock(&mutex_available);     // Lock mutex
-    // Critical section: decrement available resources by the request value
-    available[i] = available[i] - request[i];
-    pthread_mutex_unlock(&mutex_available);     // Unlock mutex
+          safe = checkSafe(customer_num);
 
-    pthread_mutex_lock(&mutex_allocation);     // Lock mutex
-    // Critical section: increment resources allocated by the request value
-    allocation[customer_num][i] = allocation[customer_num][i] + request[i];
-    pthread_mutex_unlock(&mutex_allocation);     // Unlock mutex
+          pthread_mutex_lock(&mutex_available);     // Lock mutex
+          // Critical section: decrement available resources by the request value
+          available[i] = available[i] - request[i];
+          pthread_mutex_unlock(&mutex_available);     // Unlock mutex
 
-    pthread_mutex_lock(&mutex_need);     // Lock mutex
-    // Critical section: decrement need by the request value
-    need[customer_num][i] = need[customer_num][i] - request[i];     // Critical section
-    pthread_mutex_unlock(&mutex_need);     // Unlock mutex
+          pthread_mutex_lock(&mutex_allocation);     // Lock mutex
+          // Critical section: increment resources allocated by the request value
+          allocation[customer_num][i] = allocation[customer_num][i] + request[i];
+          pthread_mutex_unlock(&mutex_allocation);     // Unlock mutex
 
-  }
+          pthread_mutex_lock(&mutex_need);     // Lock mutex
+          // Critical section: decrement need by the request value
+          need[customer_num][i] = need[customer_num][i] - request[i];     // Critical section
+          pthread_mutex_unlock(&mutex_need);     // Unlock mutex
 
-  // If check safe returns -1, undo the above incrementations/decrementations by doing the opposite
+          if (safe == 0) {
+            printf("The request is granted.\n");
 
-  return 0;
+            return 0;
+
+          } else {
+            pthread_mutex_lock(&mutex_available);     // Lock mutex
+            // Critical section: increment available resources by the request value
+            available[i] = available[i] + request[i];
+            pthread_mutex_unlock(&mutex_available);     // Unlock mutex
+
+            pthread_mutex_lock(&mutex_allocation);     // Lock mutex
+            // Critical section: decrement resources allocated by the request value
+            allocation[customer_num][i] = allocation[customer_num][i] - request[i];
+            pthread_mutex_unlock(&mutex_allocation);     // Unlock mutex
+
+            pthread_mutex_lock(&mutex_need);     // Lock mutex
+            // Critical section: increment need by the request value
+            need[customer_num][i] = need[customer_num][i] + request[i];     // Critical section
+            pthread_mutex_unlock(&mutex_need);     // Unlock mutex
+
+            printf("\n The system is unsafe.\n");
+
+            return -1;
+          }
+      }
+    }
 }
+
 
 // Customer shared thread function for the release of resources
 int release_resources(int customer_num, int release[]) {
@@ -99,9 +142,58 @@ int release_resources(int customer_num, int release[]) {
   return 0;
 }
 
-int main(int argc, char *argv[]) {
+void *customer_threads(void *customer_res_num) {
+  int num = (intptr_t)customer_res_num;
+  int request[NUM_RESOURCES];
+  int request_check = 0;
 
-  pthread_mutex_init(&mutex, NULL);     // Initialize mutex
+  for (int i = 0; i < NUM_RESOURCES; i++) {
+    request[i] = rand() % available[i];
+  }
+
+  if (request_resources(num, request) < 0) {
+    printf("Customer number %d and the resources are: ", num+1);
+
+    for (int i = 0; i < NUM_RESOURCES; i++) {
+      printf("%d ", request[i]);
+    }
+
+    printf("Denied resources.\n");
+
+  } else {
+    request_check = 1;
+    printf("> Customer number %d and the resources are: ", num+1);
+
+    for (int i = 0; i < NUM_RESOURCES; i++) {
+      printf("%d ", request[i]);
+    }
+
+    printf("Accepted resources.\n");
+  }
+
+  if (request_check == 1) {
+    sleep(rand() % 10);
+    release_resources(num, request);
+    printf("\n Customer number %d release some resources", num+1);
+    printf("\n");
+  }
+
+  return 0;
+}
+
+void print_matrix(int matrix[NUM_CUSTOMERS][NUM_RESOURCES], char *name) {
+  printf("----- %s Matrix -----\n", name);
+
+  for (int i = 0; i < NUM_CUSTOMERS; i++) {
+    for (int j = 0; j < NUM_RESOURCES; j++) {
+      printf("%d ", matrix[i][j]);
+    }
+
+    printf("\n");
+  }
+}
+
+int main(int argc, char *argv[]) {
 
   // Read in arguments, NUM_RESOURCES is the number of arguments
   // Place three resource values from user input into the available array
@@ -114,7 +206,14 @@ int main(int argc, char *argv[]) {
 
   // Allocate the resources
   // Call to generate the matrix
-  generate_matrix();
+  srand(time(NULL));
+
+  for (int i = 0; i < NUM_CUSTOMERS; i++) {
+    for (int j = 0; j < NUM_RESOURCES; j++) {
+      maximum[i][j] = rand() % available[j];
+      allocation[i][j] = 0;
+    }
+  }
 
   // Print the maximum array matrix
   printf("Maximum matrix\n");
@@ -140,19 +239,16 @@ int main(int argc, char *argv[]) {
 
   printf("\n");
 
-  // Print the allocation matrix
-  printf("Allocation matrix\n");
+  // Initialize and create threads
+  pthread_t tid_request_release;
+
   for (int i = 0; i < NUM_CUSTOMERS; i++) {
     for (int j = 0; j < NUM_RESOURCES; j++) {
-      printf("%d ", allocation[i][j]);
+      pthread_create(&tid_request_release, NULL, customer_threads, (void *) (intptr_t)j);
     }
-    printf("\n");
   }
 
-  // Initialize and create threads
-
-
-  pthread_mutex_destroy(&mutex);     // Destroy mutex
+  sleep(1);
 
   return EXIT_SUCCESS;
 }
