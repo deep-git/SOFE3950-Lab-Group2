@@ -31,26 +31,25 @@ int need[NUM_CUSTOMERS][NUM_RESOURCES];
 
 int request_resources(int customer_num, int request[]);
 int release_resources(int customer_num, int release[]);
-void print_matrix(int matrix[NUM_CUSTOMERS][NUM_RESOURCES], char *name);
 int checkSafe(int num);
 
 int checkSafe(int num) {
-  int work[num];
-  int finish[num];
+  int process_resource[num];
+  int finish_resource[num];
 
   for (int i = 0; i < NUM_RESOURCES; i++) {
-    work[num] = available[i];
+    process_resource[num] = available[i];
   }
 
-  finish[num] = -1;
+  finish_resource[num] = -1;
 
   for (int i = 0; i < NUM_CUSTOMERS; i++) {
     for (int j = 0; j < NUM_RESOURCES; j++) {
-        if (finish[i] == -1 && need[i][j] <= work[i]) {
+        if (finish_resource[i] == -1 && need[i][j] <= process_resource[i]) {
           return -1;
         } else {
-          work[i] = work[i] + allocation[i][j];
-          finish[i] = 0;
+          process_resource[i] = process_resource[i] + allocation[i][j];
+          finish_resource[i] = 0;
         }
     }
   }
@@ -87,7 +86,7 @@ int request_resources(int customer_num, int request[]) {
           pthread_mutex_unlock(&mutex_need);     // Unlock mutex
 
           if (safe == 0) {
-            printf("The request is granted.\n");
+            printf("\nThe request is granted.\n");
 
             return 0;
 
@@ -107,14 +106,13 @@ int request_resources(int customer_num, int request[]) {
             need[customer_num][i] = need[customer_num][i] + request[i];     // Critical section
             pthread_mutex_unlock(&mutex_need);     // Unlock mutex
 
-            printf("\n The system is unsafe.\n");
+            printf("\nThe system is unsafe.\n");
 
             return -1;
           }
       }
     }
 }
-
 
 // Customer shared thread function for the release of resources
 int release_resources(int customer_num, int release[]) {
@@ -179,18 +177,6 @@ void *customer_threads(void *customer_res_num) {
   }
 
   return 0;
-}
-
-void print_matrix(int matrix[NUM_CUSTOMERS][NUM_RESOURCES], char *name) {
-  printf("----- %s Matrix -----\n", name);
-
-  for (int i = 0; i < NUM_CUSTOMERS; i++) {
-    for (int j = 0; j < NUM_RESOURCES; j++) {
-      printf("%d ", matrix[i][j]);
-    }
-
-    printf("\n");
-  }
 }
 
 int main(int argc, char *argv[]) {
