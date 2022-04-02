@@ -134,6 +134,7 @@ int request_resources(int customer_num, int request[]) {
           }
       }
     }
+    return -1;
 }
 
 /* -------------------------------------------- RELEASE RESOURCES ----------------------------------------- */
