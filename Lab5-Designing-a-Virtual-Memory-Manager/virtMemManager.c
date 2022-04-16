@@ -40,7 +40,7 @@ int max(int a, int b){
     return b;
 }
 
-// FIFO
+// replace old mapping - First In First Out (FIFO)
 void add_to_tlb(unsigned char logical, unsigned char physical) {
     struct tlbinput_value *input_value = &tlb[tlb_index % TLB_SIZE];
     tlb_index++;
@@ -48,7 +48,7 @@ void add_to_tlb(unsigned char logical, unsigned char physical) {
     input_value->physAddress = physical;
 }
 
-// Returning physical address from TLB or if not present return -1
+// return the physical address if present else -1
 int search_tlb(unsigned char logicalPage) {
     int i;
     for (i = max((tlb_index - TLB_SIZE), 0); i < tlb_index; i++) {
@@ -126,14 +126,15 @@ int main(int argc, const char *argv[]){
         int physicalAddress = (physicalPage << OFFSET_BITS) | offset;
         signed char value = main_memory[physicalPage * PAGE_SIZE + offset];
 
+        //print virtual, physical address and value
         printf("Virtual address: %d \tPhysical address: %d \tValue: %d\n", logicalAddress, physicalAddress, value);
     }
 
+    // calculating rate
     double page_fault_rate = page_faults / (1. * total_addresses);
     double tlb_hit_rate = tlb_hits / (1. * total_addresses);
 
-
-    // print
+    // print results to console
     printf("***********************************************************\n");
     printf("Number of Translated Addresses \t= %d\n", total_addresses);
     printf("Page Faults \t\t\t= %d\n"                   , page_faults);
