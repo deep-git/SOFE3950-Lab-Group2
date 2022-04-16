@@ -33,7 +33,7 @@ int tlb_index = 0;
 int pagetable[PAGES];
 signed char *backing;
 
-// find max
+// Finding max
 int max(int a, int b){
     if (a > b)
         return a;
@@ -48,7 +48,7 @@ void add_to_tlb(unsigned char logical, unsigned char physical) {
     input_value->physAddress = physical;
 }
 
-// Returns the physical address from TLB or -1 if not present.
+// Returning physical address from TLB or if not present return -1
 int search_tlb(unsigned char logicalPage) {
     int i;
     for (i = max((tlb_index - TLB_SIZE), 0); i < tlb_index; i++) {
@@ -63,7 +63,7 @@ int search_tlb(unsigned char logicalPage) {
 }
 
 int main(int argc, const char *argv[]){
-    //invalid usage
+    // Invaild usage message
     if (argc != 3) {
         printf("----------------------------------------------------\n");
         printf("USAGE: ./virtMemManager BACKING_STORE.bin <filename>\n");
@@ -81,13 +81,13 @@ int main(int argc, const char *argv[]){
     const char *input_file = argv[2];
     FILE *input_fp = fopen(input_file, "r");
 
-    // initialize page table
+    // Page table initialize 
     int i;
     for (i = 0; i < PAGES; i++) {
         pagetable[i] = -1;
     }
 
-    // integers for calculating stats
+    // Define ints for calculating stats
     int total_addresses = 0;
     int tlb_hits = 0;
     int page_faults = 0;
@@ -95,14 +95,14 @@ int main(int argc, const char *argv[]){
     // Number of the next unallocated physical page in main memory
     unsigned char free_page = 0;
 
-    // read address file
+    // Need to read the address file 
     while (fgets(buffer, BUFFER_SIZE, input_fp) != NULL) {
         total_addresses++;
         int logicalAddress = atoi(buffer);
         int offset = logicalAddress & OFFSET_MASK;
         int logicalPage= (logicalAddress >> OFFSET_BITS) & PAGE_MASK;
         int physicalPage = search_tlb(logicalPage);
-
+        
         if (physicalPage != -1) {                          // TLB hit
             tlb_hits++;
 
@@ -114,7 +114,7 @@ int main(int argc, const char *argv[]){
                 physicalPage = free_page;
                 free_page++;
 
-                // Copy page from backing file into physical memory
+                // Backing file page is copied into physical memory 
                 memcpy(main_memory + physicalPage * PAGE_SIZE, backing + logicalPage * PAGE_SIZE, PAGE_SIZE);
 
                 pagetable[logicalPage] = physicalPage;
